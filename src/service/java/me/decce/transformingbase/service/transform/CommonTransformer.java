@@ -1,8 +1,10 @@
 package me.decce.transformingbase.service.transform;
 
 import me.decce.transformingbase.constants.Constants;
+import me.decce.transformingbase.core.Jasione;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
@@ -14,6 +16,10 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.analysis.Analyzer;
 import org.objectweb.asm.tree.analysis.AnalyzerException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +35,33 @@ public class CommonTransformer {
         if (ENUM_CLASSNAME.equals(node.superName)) {
             // Enum class, add VALUES field
             EnumTransformer.processEnum(node);
+            maybeDumpClass(node);
             return true;
         }
         else {
-            return NonEnumTransformer.processNonEnum(node);
+            if (NonEnumTransformer.processNonEnum(node)) {
+                maybeDumpClass(node);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void maybeDumpClass(ClassNode classNode) {
+        if (Jasione.getConfig().dumpClasses) {
+            dumpClass(classNode);
+        }
+    }
+
+    private static void dumpClass(ClassNode classNode) {
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        classNode.accept(writer);
+        try {
+            var path = Path.of(Constants.OUTPUT_DIR, classNode.name.replace(".", "/") + ".class");
+            Files.createDirectories(path.getParent());
+            Files.write(path, writer.toByteArray(), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            LOGGER.warn("Failed to dump class {}", classNode.name, e);
         }
     }
 

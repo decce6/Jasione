@@ -1,7 +1,7 @@
 package me.decce.transformingbase.service.forgelike;
 
 //? if forge || (neoforge && <1.21.9) {
-import cpw.mods.modlauncher.LaunchPluginHandler;
+/*import cpw.mods.modlauncher.LaunchPluginHandler;
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.api.IEnvironment;
 import cpw.mods.modlauncher.api.ITransformationService;
@@ -25,9 +25,9 @@ public class TransformationServiceImpl implements ITransformationService {
     @Override
     public void initialize(IEnvironment environment) {
     //? if forge {
-        /*// Required when earlyWindowControl is disabled
+        /^// Required when earlyWindowControl is disabled
         Bootstrapper.bootstrap();
-    *///?}
+    ^///?}
     }
 
     @SuppressWarnings("unchecked")
@@ -51,15 +51,15 @@ public class TransformationServiceImpl implements ITransformationService {
     }
 
     //? if forge {
-    /*@Override
+    /^@Override
     public List<ITransformer> transformers() {
         return List.of();
     }
-    *///?} else {
+    ^///?} else {
     @Override
     public List<? extends ITransformer<?>> transformers() {
         return List.of();
     }
     //?}
 }
-//?}
+*///?}

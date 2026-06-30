@@ -52,6 +52,7 @@ dependencies {
     }
     shade("com.electronwill.night-config:core:3.9.0")
     shade("com.electronwill.night-config:toml:3.9.0")
+    shade("net.lenni0451:Reflect:1.6.3")
 }
 
 fun fetchLatestChangelog() : String {
@@ -118,8 +119,7 @@ tasks {
         from (files(layout.settingsDirectory.file("thirdparty/licenses/LICENSE_NightConfig")))
         from (serviceSourceSet.output)
         relocate("me.decce.transformingbase", "me.decce.$modid")
-        relocate("net.lenni0451.classtransform", "me.decce.$modid.shadow.classtransform")
-        relocate("net.lenni0451.reflect", "me.decce.$modid.shadow.reflect")
+        relocate("net.lenni0451", "me.decce.$modid.shadow.lenni0451")
         relocate("com.electronwill.nightconfig", "me.decce.$modid.shadow.nightconfig")
         configurations = listOf(shade)
         mergeServiceFiles()

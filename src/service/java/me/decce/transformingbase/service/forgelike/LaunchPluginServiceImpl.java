@@ -1,4 +1,5 @@
-package me.decce.transformingbase.service.forgelike;
+//? forge || (neoforge && <1.21.9) {
+/*package me.decce.transformingbase.service.forgelike;
 
 import cpw.mods.modlauncher.api.ITransformerActivity;
 import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
@@ -34,25 +35,9 @@ public class LaunchPluginServiceImpl implements ILaunchPluginService {
     @Override
     public boolean processClass(Phase phase, ClassNode classNode, Type classType, String reason) {
         if (CLASSLOADING_REASON.equals(reason)) {
-            if (CommonTransformer.process(classNode)) {
-                if (Jasione.getConfig().dumpClasses) {
-                    dumpClass(classNode);
-                }
-                return true;
-            }
+            return CommonTransformer.process(classNode);
         }
         return false;
     }
-
-    private void dumpClass(ClassNode classNode) {
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-        classNode.accept(writer);
-        try {
-            var path = Path.of(Constants.OUTPUT_DIR, classNode.name.replace(".", "/") + ".class");
-            Files.createDirectories(path.getParent());
-            Files.write(path, writer.toByteArray(), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException e) {
-            LOGGER.warn("Failed to dump class {}", classNode.name, e);
-        }
-    }
 }
+*///? }

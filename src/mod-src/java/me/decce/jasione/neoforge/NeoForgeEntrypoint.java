@@ -1,7 +1,7 @@
 package me.decce.jasione.neoforge;
 
 //? if neoforge {
-import me.decce.jasione.JasioneMod;
+/*import me.decce.jasione.JasioneMod;
 import me.decce.transformingbase.constants.Constants;
 import net.neoforged.fml.common.Mod;
 
@@ -11,4 +11,4 @@ public class NeoForgeEntrypoint {
         JasioneMod.init();
     }
 }
-//?}
+*///?}

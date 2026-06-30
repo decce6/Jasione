@@ -1,7 +1,7 @@
 package me.decce.jasione.fabric;
 
 //? if fabric {
-/*import me.decce.jasione.JasioneMod;
+import me.decce.jasione.JasioneMod;
 import net.fabricmc.api.ModInitializer;
 
 public class FabricEntrypoint implements ModInitializer {
@@ -10,4 +10,4 @@ public class FabricEntrypoint implements ModInitializer {
         JasioneMod.init();
     }
 }
-*///?}
+//?}

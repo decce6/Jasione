@@ -34,6 +34,7 @@ dependencies {
 
     compileOnly("com.electronwill.night-config:core:3.9.0")
     compileOnly("com.electronwill.night-config:toml:3.9.0")
+    compileOnly("net.lenni0451:Reflect:1.6.3")
 }
 
 tasks {
