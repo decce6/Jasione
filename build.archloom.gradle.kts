@@ -32,9 +32,10 @@ dependencies {
     }
 }
 
-val modJar = tasks.register<Jar>("modJar") {
+val modJar = tasks.register<ShadowJar>("modJar") {
     from(modSourceSet.output)
     archiveFileName = "$modid-forge-mod.jar"
+    relocate ("me.decce.transformingbase", "me.decce.$modid")
     manifest.attributes (
         "Automatic-Module-Name" to "me.decce.$modid"
     )

@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id("me.decce.transformingbase.gradle.transformingbase-common-conventions")
     id("net.neoforged.moddev") version "2.0.141"
@@ -14,9 +16,10 @@ neoForge {
     version = prop("deps.neoforge")
 }
 
-val modJar = tasks.register<Jar>("modJar") {
+val modJar = tasks.register<ShadowJar>("modJar") {
     from(modSourceSet.output)
     archiveClassifier = "mod"
+    relocate ("me.decce.transformingbase", "me.decce.$modid")
     manifest.attributes (
         "Automatic-Module-Name" to "me.decce.$modid"
     )
