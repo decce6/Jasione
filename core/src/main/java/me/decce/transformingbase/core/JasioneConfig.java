@@ -13,7 +13,7 @@ public class JasioneConfig {
     @Comment("")
     public List<String> knownEnums = List.of();
     @Key("debug.dumpClasses")
-    @Comment("")
+    @Comment("When enabled, dumps transformed classes to \".jasione.out\" folder")
     public boolean dumpClasses;
 
     @Retention(RetentionPolicy.RUNTIME)

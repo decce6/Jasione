@@ -66,9 +66,13 @@ public class ConfigLoader {
                 if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || Modifier.isFinal(modifiers)) {
                     continue;
                 }
-                night.set(field.getName(), field.get(config));
+                String key = field.getName();
+                if (field.isAnnotationPresent(JasioneConfig.Key.class)) {
+                    key = field.getAnnotation(JasioneConfig.Key.class).value();
+                }
+                night.set(key, field.get(config));
                 if (field.isAnnotationPresent(JasioneConfig.Comment.class)) {
-                    night.setComment(field.getName(), field.getAnnotation(JasioneConfig.Comment.class).value());
+                    night.setComment(key, field.getAnnotation(JasioneConfig.Comment.class).value());
                 }
             }
         } catch (Exception e) {
@@ -86,8 +90,12 @@ public class ConfigLoader {
                 if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || Modifier.isFinal(modifiers)) {
                     continue;
                 }
-                if (night.contains(field.getName())) {
-                    field.set(config, night.get(field.getName()));
+                String key = field.getName();
+                if (field.isAnnotationPresent(JasioneConfig.Key.class)) {
+                    key = field.getAnnotation(JasioneConfig.Key.class).value();
+                }
+                if (night.contains(key)) {
+                    field.set(config, night.get(key));
                 }
             }
         } catch (Exception e) {
