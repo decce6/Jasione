@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ConfigLoader {
-    private static final Logger LOGGER = LogManager.getLogger(Constants.MOD_NAME);
     private static final Path CONFIG_PATH;
     private static final Path CONFIG_FILE;
 
@@ -39,7 +38,7 @@ public class ConfigLoader {
         try (var night = toNightConfig(config)) {
             night.save();
         } catch (Exception e) {
-            LOGGER.error("Failed to save configuration!", e);
+            Jasione.LOGGER.error("Failed to save configuration!", e);
         }
     }
 
@@ -52,7 +51,7 @@ public class ConfigLoader {
             try {
                 return fromNightConfig();
             } catch (Exception e) {
-                LOGGER.error("Failed to read configuration!", e);
+                Jasione.LOGGER.error("Failed to read configuration!", e);
             }
         }
         return new JasioneConfig();

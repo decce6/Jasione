@@ -1,5 +1,6 @@
 package me.decce.jasione;
 
+import me.decce.transformingbase.core.Jasione;
 import net.minecraft.core.Direction;
 
 import java.time.DayOfWeek;
@@ -9,8 +10,31 @@ public class TransformationSample {
     private static Object[] objects;
 
     public static void init() {
+        assertEquality();
+        assertMutateSafety();
     }
 
+    public static void assertEquality() {
+        var dir1 = Direction.values();
+        var dir2 = Direction.values();
+        if (dir1 != dir2) {
+            Jasione.LOGGER.error("Assertion dir1==dir2 failed, Jasione is not working properly");
+        }
+    }
+
+    public static void assertMutateSafety() {
+        var dir1 = Direction.values();
+        var dir2 = Direction.values();
+        dir1[0] = Direction.EAST;
+        if (dir2[0] == Direction.EAST) {
+            Jasione.LOGGER.error("Assertion dir2[0]!=EAST failed, Jasione is not working properly");
+        }
+        if (dir1 == dir2) {
+            Jasione.LOGGER.error("Assertion dir1!=dir2 failed, Jasione is not working properly");
+        }
+    }
+
+    // The methods below are not run or asserted, but can be inspected manually by settings dumpClasses=true in the config
     public static String[] read() {
         var dirs = Direction.values(); // Should be cached
         String[] strings = new String[dirs.length];
