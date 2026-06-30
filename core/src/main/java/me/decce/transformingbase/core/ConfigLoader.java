@@ -1,9 +1,8 @@
-package me.decce.transformingbase.service;
+package me.decce.transformingbase.core;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.toml.TomlFormat;
 import me.decce.transformingbase.constants.Constants;
-import me.decce.transformingbase.core.JasioneConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -50,8 +50,8 @@ dependencies {
     shade("me.decce.transformingbase:core") {
         isTransitive = false
     }
-    shade("com.electronwill.night-config:core:3.8.3")
-    shade("com.electronwill.night-config:toml:3.8.3")
+    shade("com.electronwill.night-config:core:3.9.0")
+    shade("com.electronwill.night-config:toml:3.9.0")
 }
 
 fun fetchLatestChangelog() : String {

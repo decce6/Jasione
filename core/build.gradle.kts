@@ -29,22 +29,11 @@ val shade = configurations.create("shade")
 configurations.implementation.get().extendsFrom(shade)
 
 dependencies {
-    shade ("net.lenni0451.classtransform:core:1.15.0-SNAPSHOT") {
-        isTransitive = false
-    }
-    //shade ("org.ow2.asm:asm:9.9.1")
-    //shade ("org.ow2.asm:asm-commons:9.9.1")
-    shade ("net.lenni0451:Reflect:1.6.2")
 
     compileOnly ("org.apache.logging.log4j:log4j-core:2.19.0")
-    compileOnly ("cpw.mods:modlauncher:10.0.9")
-    compileOnly ("cpw.mods:bootstraplauncher:1.1.2")
-    // compileOnly ("cpw.mods:securejarhandler:2.1.10")
-    compileOnly ("net.minecraftforge:securemodules:2.2.21")
 
-    compileOnly ("org.lwjgl:lwjgl:3.3.1")
-    compileOnly ("org.lwjgl:lwjgl-glfw:3.3.1")
-    compileOnly ("org.lwjgl:lwjgl-opengl:3.3.1")
+    compileOnly("com.electronwill.night-config:core:3.9.0")
+    compileOnly("com.electronwill.night-config:toml:3.9.0")
 }
 
 tasks {

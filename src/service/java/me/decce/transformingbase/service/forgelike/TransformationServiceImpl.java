@@ -9,8 +9,9 @@ import cpw.mods.modlauncher.api.ITransformer;
 import cpw.mods.modlauncher.api.IncompatibleEnvironmentException;
 import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
 import me.decce.transformingbase.constants.Constants;
-import me.decce.transformingbase.util.ReflectionHelper;
+import me.decce.transformingbase.core.Jasione;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,13 +30,24 @@ public class TransformationServiceImpl implements ITransformationService {
     *///?}
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onLoad(IEnvironment env, Set<String> otherServices) throws IncompatibleEnvironmentException {
-        var launchPluginsGetter = ReflectionHelper.unreflectGetter(() -> Launcher.class.getDeclaredField("launchPlugins"));
-        var launchPlugins = ReflectionHelper.unchecked(() -> (LaunchPluginHandler) launchPluginsGetter.invoke(Launcher.INSTANCE));
-        var pluginsGetter = ReflectionHelper.unreflectGetter(() -> LaunchPluginHandler.class.getDeclaredField("plugins"));
-        var plugins = ReflectionHelper.unchecked(() -> (Map<String, ILaunchPluginService>) pluginsGetter.invoke(launchPlugins));
-        plugins.put(Constants.MOD_ID, new LaunchPluginServiceImpl());
+        if (!Jasione.getConfig().enabled) {
+            return;
+        }
+        try {
+            Field launchPluginsField = Launcher.class.getDeclaredField("launchPlugins");
+            launchPluginsField.setAccessible(true);
+            var launchPlugins = (LaunchPluginHandler) launchPluginsField.get(Launcher.INSTANCE);
+            Field pluginsGetterField = LaunchPluginHandler.class.getDeclaredField("plugins");
+            pluginsGetterField.setAccessible(true);
+            var plugins = (Map<String, ILaunchPluginService>) pluginsGetterField.get(launchPlugins);
+            plugins.put(Constants.MOD_ID, new LaunchPluginServiceImpl());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     //? if forge {

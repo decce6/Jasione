@@ -35,7 +35,7 @@ public class LaunchPluginServiceImpl implements ILaunchPluginService {
     public boolean processClass(Phase phase, ClassNode classNode, Type classType, String reason) {
         if (CLASSLOADING_REASON.equals(reason)) {
             if (CommonTransformer.process(classNode)) {
-                if (Jasione.config.dumpClasses) {
+                if (Jasione.getConfig().dumpClasses) {
                     dumpClass(classNode);
                 }
                 return true;

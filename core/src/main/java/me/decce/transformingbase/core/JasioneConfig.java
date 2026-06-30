@@ -9,7 +9,7 @@ import java.util.List;
 @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal", "unused"})
 public class JasioneConfig {
     @Comment("Specifies whether to enable the mod")
-    public boolean enabled = true; //TODO
+    public boolean enabled = true;
     @Comment("")
     public List<String> knownEnums = List.of();
     @Key("debug.dumpClasses")
