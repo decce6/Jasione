@@ -1,3 +1,4 @@
+//? fabric {
 package org.spongepowered.asm.mixin.transformer;
 
 import me.decce.transformingbase.constants.Constants;
@@ -27,3 +28,4 @@ public class JasioneMixinCoprocessor extends MixinCoprocessor {
         return predicate.test(classNode);
     }
 }
+//? }

@@ -24,10 +24,6 @@ public class TransformationServiceImpl implements ITransformationService {
 
     @Override
     public void initialize(IEnvironment environment) {
-    //? if forge {
-        /^// Required when earlyWindowControl is disabled
-        Bootstrapper.bootstrap();
-    ^///?}
     }
 
     @SuppressWarnings("unchecked")
