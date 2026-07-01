@@ -23,6 +23,7 @@ public class ClassProcessorImpl implements ClassProcessor {
     @Override
     public ComputeFlags processClass(TransformationContext context) {
         boolean transformed = CommonTransformer.process(context.node());
+        // We have already modified maxStack appropriately - SIMPLE_REWRITE should suffice here
         return transformed ? ComputeFlags.SIMPLE_REWRITE : ComputeFlags.NO_REWRITE;
     }
 }
