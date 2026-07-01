@@ -26,5 +26,10 @@ public class ClassProcessorImpl implements ClassProcessor {
         // We have already modified maxStack appropriately - SIMPLE_REWRITE should suffice here
         return transformed ? ComputeFlags.SIMPLE_REWRITE : ComputeFlags.NO_REWRITE;
     }
+
+    @Override
+    public OrderingHint orderingHint() {
+        return OrderingHint.LATE;
+    }
 }
 *///? }
