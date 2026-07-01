@@ -6,8 +6,6 @@ import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
 import me.decce.transformingbase.constants.Constants;
 import me.decce.transformingbase.core.Jasione;
 import me.decce.transformingbase.service.transform.CommonTransformer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
@@ -19,7 +17,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.EnumSet;
 
 public class LaunchPluginServiceImpl implements ILaunchPluginService {
-    public static final Logger LOGGER = LogManager.getLogger();
     public static final String CLASSLOADING_REASON = ITransformerActivity.CLASSLOADING_REASON;
 
     @Override
