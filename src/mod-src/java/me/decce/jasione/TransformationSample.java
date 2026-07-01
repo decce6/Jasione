@@ -7,11 +7,18 @@ import java.time.DayOfWeek;
 import java.util.Arrays;
 
 public class TransformationSample {
+    private enum PrivateEnum {
+        PACKAGE,
+        CLASS,
+        STRUCT
+    }
+
     private static Object[] objects;
 
     public static void init() {
         assertEquality();
         assertMutateSafety();
+        assertPrivateEnumsWorking();
     }
 
     public static void assertEquality() {
@@ -31,6 +38,14 @@ public class TransformationSample {
         }
         if (dir1 == dir2) {
             Jasione.LOGGER.error("Assertion dir1!=dir2 failed, Jasione is not working properly");
+        }
+    }
+
+    public static void assertPrivateEnumsWorking() {
+        var private1 = PrivateEnum.values();
+        var private2 = PrivateEnum.values();
+        if (private1 != private2) {
+            Jasione.LOGGER.error("Assertion private1==private2 failed, Jasione is not working properly");
         }
     }
 
