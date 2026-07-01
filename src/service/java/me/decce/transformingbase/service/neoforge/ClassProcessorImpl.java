@@ -5,7 +5,10 @@ import me.decce.transformingbase.constants.Constants;
 import me.decce.transformingbase.core.Jasione;
 import me.decce.transformingbase.service.transform.CommonTransformer;
 import net.neoforged.neoforgespi.transformation.ClassProcessor;
+import net.neoforged.neoforgespi.transformation.ClassProcessorIds;
 import net.neoforged.neoforgespi.transformation.ProcessorName;
+
+import java.util.Set;
 
 public class ClassProcessorImpl implements ClassProcessor {
     public static final ProcessorName NAME = new ProcessorName(Constants.MOD_ID, "main");
@@ -30,6 +33,11 @@ public class ClassProcessorImpl implements ClassProcessor {
     @Override
     public OrderingHint orderingHint() {
         return OrderingHint.LATE;
+    }
+
+    @Override
+    public Set<ProcessorName> runsAfter() {
+        return Set.of(ClassProcessorIds.MIXIN, ClassProcessorIds.SIMPLE_PROCESSORS_GROUP);
     }
 }
 *///? }
