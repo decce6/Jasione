@@ -16,7 +16,9 @@ public class FabricPreLaunchEntrypoint implements PreLaunchEntrypoint {
     @SuppressWarnings("unchecked")
     @Override
     public void onPreLaunch() {
-        Jasione.getConfig(); // Initialize the config earlier to prevent infinite loop during transformation
+        if (!Jasione.getConfig().enabled) {
+            return;
+        }
         var transformer = MixinEnvironment.getCurrentEnvironment().getActiveTransformer();
         try {
             var processorField = Class.forName("org.spongepowered.asm.mixin.transformer.MixinTransformer").getDeclaredField("processor");
