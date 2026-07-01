@@ -14,6 +14,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TryCatchBlockNode;
 
 public class CacheClassGenerator {
     /*
@@ -29,8 +30,19 @@ public class CacheClassGenerator {
     *             return VALUES;
     *         } else {
     *             // SomeEnum is not actually an enum class (we falsely identified it because the method desc is identical to one on enum) - just call values() method like original
-    *             // The return value will be cast to Object[] then back to SomeEnum[] again. And the JIT is likely to eliminate both casts altogether.
-    *             return (Object[]) SomeEnum.values();
+    *             // The returned array will be cast to Object[] then back to SomeEnum[] again. And the JIT is likely to eliminate both casts altogether.
+    *             return invokeOriginalValues();
+    *         }
+    *     }
+    *
+    *     public static Object[] invokeOriginalValues() {
+    *         // We don't know if the original value is accessible or not, so try first, and if it fails, use reflection
+    *         // As long as we don't use the private type directly here, the verifier would be fine.
+    *         try {
+    *             return SomeEnum.values();
+    *         } catch (IllegalAccessError) {
+    *             // Fallback to reflection. This should happen extremely rarely.
+    *             return EnumValuesAccessor.invokeValuesSlow(...);
     *         }
     *     }
     * }
@@ -86,12 +98,37 @@ public class CacheClassGenerator {
         values.instructions.add(new JumpInsnNode(Opcodes.GOTO, endLabel));
         values.instructions.add(elseLabel);
         values.instructions.add(new FrameNode(Opcodes.F_SAME, 0, null, 0, null));
-        values.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, enumClass, "values", ASMUtil.DESC_METHOD_OBJECT_ARRAY));
+        values.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, cacheClassName, "invokeOriginalValues", ASMUtil.DESC_METHOD_OBJECT_ARRAY));
         values.instructions.add(endLabel);
         values.instructions.add(new FrameNode(Opcodes.F_SAME1, 0, null, 1, new Object[]{ASMUtil.DESC_OBJECT_ARRAY}));
         values.instructions.add(new InsnNode(Opcodes.ARETURN));
         values.maxStack = 1;
         values.maxLocals = 0;
+
+        MethodNode invokeOriginalValues = new MethodNode(ASMUtil.ACC_PUBLIC_STATIC, "invokeOriginalValues", ASMUtil.DESC_METHOD_OBJECT_ARRAY, null, null);
+        classNode.methods.add(invokeOriginalValues);
+
+        LabelNode tryStartLabel = new LabelNode();
+        LabelNode tryEndLabel = new LabelNode();
+        LabelNode catchLabel = new LabelNode();
+        LabelNode endLabel1 = new LabelNode();
+        invokeOriginalValues.instructions.add(tryStartLabel);
+        invokeOriginalValues.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, enumClass, "values", "()[L" + enumClass + ";"));
+        invokeOriginalValues.instructions.add(tryEndLabel);
+        invokeOriginalValues.instructions.add(new JumpInsnNode(Opcodes.GOTO, endLabel1));
+        invokeOriginalValues.instructions.add(catchLabel);
+        invokeOriginalValues.instructions.add(new FrameNode(Opcodes.F_SAME1, 0, null, 1, new Object[]{Type.getInternalName(IllegalAccessError.class)}));
+        invokeOriginalValues.instructions.add(new InsnNode(Opcodes.POP));
+        invokeOriginalValues.instructions.add(new LdcInsnNode(enumClass.replace('/', '.')));
+        invokeOriginalValues.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, EnumValuesAccessor.INTERNAL_NAME, "invokeValuesSlow", "(Ljava/lang/String;)[Ljava/lang/Object;"));
+        invokeOriginalValues.instructions.add(endLabel1);
+        invokeOriginalValues.instructions.add(new FrameNode(Opcodes.F_SAME1, 0, null, 1, new Object[]{"[Ljava/lang/Object;"}));
+        invokeOriginalValues.instructions.add(new InsnNode(Opcodes.ARETURN));
+
+        invokeOriginalValues.tryCatchBlocks.add(new TryCatchBlockNode(tryStartLabel, tryEndLabel, catchLabel, Type.getInternalName(IllegalAccessError.class)));
+
+        invokeOriginalValues.maxStack = 1;
+        invokeOriginalValues.maxLocals = 0;
 
         ClassWriter writer = new ClassWriter(0);
         classNode.accept(writer);

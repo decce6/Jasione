@@ -21,7 +21,7 @@ public class EnumValuesAccessor {
         return enumClass.getEnumConstants();
     }
 
-    public static Object[] invokeNonEnumValues(String nonEnumClassName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public static Object[] invokeValuesSlow(String nonEnumClassName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         // Note: this code path is only accessed when both of these conditions satisfy (very, very rare):
         //  - there is a values() call that looks exactly like it is on an enum class, but it's not (static, return type is array of self class, no params)
         //  - the enum class or the value() method is inaccessible (private / package-private)
