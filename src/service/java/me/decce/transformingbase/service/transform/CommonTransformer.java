@@ -20,7 +20,11 @@ public class CommonTransformer {
     public static final Logger LOGGER = LogManager.getLogger();
 
     public static boolean process(ClassNode node) {
-        int transformedCount = processInner(node);
+        return process(node, null);
+    }
+
+    public static boolean process(ClassNode node, Module module) {
+        int transformedCount = processInner(node, module);
         if (transformedCount > 0) {
             maybeDumpClass(node);
             maybePrintStatistics(transformedCount, node);
@@ -47,12 +51,16 @@ public class CommonTransformer {
         ClassDumper.dump(classNode.name, writer.toByteArray());
     }
 
-    public static int processInner(ClassNode node) {
+    public static int processInner(ClassNode node, Module module) {
         int count = 0;
         // Copy the method list, because during processing we might need to add clinit if it does not exist
         var methodNodes = List.copyOf(node.methods);
         for (var methodNode : methodNodes) {
             count += processMethod(methodNode, node);
+        }
+        if (count > 0 && module != null) {
+            // We have generated the cache class and loaded it in an unnamed module - add reads so the original class can access it
+            ReflectionUtil.addReadsAllUnnamed(module);
         }
         return count;
     }
