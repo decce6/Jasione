@@ -21,7 +21,7 @@ pluginManagement {
         maven("https://maven.neoforged.net/releases/")
         maven("https://maven.minecraftforge.net/")
         maven("https://maven.kikugie.dev/releases")
-        maven("https://maven.architectury.dev/")
+        exclusiveMaven("RelativityMC", "org.relativitymc", "https://repo.codemc.io/repository/relativitymc/")
         exclusiveMaven("Sponge", "org.spongepowered", "https://repo.spongepowered.org/repository/maven-public")
     }
 }
@@ -78,7 +78,7 @@ stonecutter {
             optionallyInclude("neoforge", "mdg", versions)
         }
         fun forge(versions: Iterable<String>) {
-            optionallyInclude("forge", "archloom", versions)
+            optionallyInclude("forge", "neoloom", versions)
         }
 
         fabricUnobfuscated (listOf("26.1"))

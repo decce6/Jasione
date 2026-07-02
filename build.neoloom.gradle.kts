@@ -3,7 +3,7 @@ import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("me.decce.transformingbase.gradle.transformingbase-common-conventions")
-    id("dev.architectury.loom") version "1.13-SNAPSHOT"
+    id("org.relativitymc.neo-loom-remap") version "1.17-SNAPSHOT"
     id("com.gradleup.shadow")
     id("me.modmuss50.mod-publish-plugin")
 }
@@ -16,10 +16,14 @@ val modSourceSet = sourceSets["mod-src"]
 // Need to shadow MixinExtras in <1.18.2
 val jijMixinExtras = stonecutter.eval(stonecutter.current.version, ">=1.18.2")
 
+repositories {
+    maven("https://files.minecraftforge.net/maven")
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:${prop("deps.minecraft")}")
     mappings(loom.officialMojangMappings())
-    forge("net.minecraftforge:forge:${prop("deps.minecraft")}-${prop("deps.forge")}")
+    forgeUserdev("net.minecraftforge:forge:${prop("deps.minecraft")}-${prop("deps.forge")}:userdev")
 
     annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0")
     implementation("io.github.llamalad7:mixinextras-common:0.5.0")
