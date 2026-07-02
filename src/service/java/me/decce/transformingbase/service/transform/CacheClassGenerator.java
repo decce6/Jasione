@@ -64,28 +64,46 @@ public class CacheClassGenerator {
         var isEnumField = new FieldNode(ASMUtil.ACC_PUBLIC_STATIC_FINAL, "IS_ENUM", ASMUtil.DESC_BOOLEAN, null, null);
         classNode.fields.add(isEnumField);
 
+        classNode.methods.add(generateClinit(enumClass, cacheClassName));
+        classNode.methods.add(generateValuesMethod(enumClass, cacheClassName));
+        classNode.methods.add(generateInvokeOriginalValuesMethod(enumClass, cacheClassName));
+
+        ClassWriter writer = new ClassWriter(0);
+        classNode.accept(writer);
+        var bytes = writer.toByteArray();
+
+        if (Jasione.getConfig().dumpClasses) {
+            ClassDumper.dump(cacheClassName, bytes);
+        }
+
+        return bytes;
+    }
+
+    private static MethodNode generateClinit(String enumClass, String cacheClass) {
         // Use reflection to get values array and store the cache array as Object[] because the enum class may be inaccessible (private or package-private)
         // The reflection logic is in EnumValuesAccessor
         MethodNode clinit = new MethodNode(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
-        classNode.methods.add(clinit);
 
         /* VALUES = EnumValuesAccessor.values(...) */
         clinit.instructions.add(new LdcInsnNode(enumClass.replace('/', '.')));
         clinit.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, EnumValuesAccessor.INTERNAL_NAME, "values", "(Ljava/lang/String;)[Ljava/lang/Object;"));
-        clinit.instructions.add(new FieldInsnNode(Opcodes.PUTSTATIC, cacheClassName, "VALUES", ASMUtil.DESC_OBJECT_ARRAY));
+        clinit.instructions.add(new FieldInsnNode(Opcodes.PUTSTATIC, cacheClass, "VALUES", ASMUtil.DESC_OBJECT_ARRAY));
 
         /* IS_ENUM = EnumValuesAccessor.isEnum(...) */
         clinit.instructions.add(new LdcInsnNode(enumClass.replace('/', '.')));
         clinit.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, EnumValuesAccessor.INTERNAL_NAME, "isEnum", "(Ljava/lang/String;)Z"));
-        clinit.instructions.add(new FieldInsnNode(Opcodes.PUTSTATIC, cacheClassName, "IS_ENUM", ASMUtil.DESC_BOOLEAN));
+        clinit.instructions.add(new FieldInsnNode(Opcodes.PUTSTATIC, cacheClass, "IS_ENUM", ASMUtil.DESC_BOOLEAN));
 
         clinit.instructions.add(new InsnNode(Opcodes.RETURN));
 
         clinit.maxStack = 1;
         clinit.maxLocals = 0;
 
+        return clinit;
+    }
+
+    private static MethodNode generateValuesMethod(String enumClass, String cacheClassName) {
         MethodNode values = new MethodNode(ASMUtil.ACC_PUBLIC_STATIC, "values", ASMUtil.DESC_METHOD_OBJECT_ARRAY, null, null);
-        classNode.methods.add(values);
 
         LabelNode elseLabel = new LabelNode();
         LabelNode endLabel = new LabelNode();
@@ -102,8 +120,11 @@ public class CacheClassGenerator {
         values.maxStack = 1;
         values.maxLocals = 0;
 
+        return values;
+    }
+
+    private static MethodNode generateInvokeOriginalValuesMethod(String enumClass, String cacheClassName) {
         MethodNode invokeOriginalValues = new MethodNode(ASMUtil.ACC_PUBLIC_STATIC, "invokeOriginalValues", ASMUtil.DESC_METHOD_OBJECT_ARRAY, null, null);
-        classNode.methods.add(invokeOriginalValues);
 
         LabelNode tryStartLabel = new LabelNode();
         LabelNode tryEndLabel = new LabelNode();
@@ -127,15 +148,6 @@ public class CacheClassGenerator {
         invokeOriginalValues.maxStack = 1;
         invokeOriginalValues.maxLocals = 0;
 
-        ClassWriter writer = new ClassWriter(0);
-        classNode.accept(writer);
-        var bytes = writer.toByteArray();
-
-        if (Jasione.getConfig().dumpClasses) {
-            ClassDumper.dump(cacheClassName, bytes);
-        }
-
-        return bytes;
+        return invokeOriginalValues;
     }
-
 }
