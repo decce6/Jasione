@@ -58,11 +58,7 @@ tasks {
         inputFile = shadowJar.flatMap { it.archiveFile }
         archiveClassifier = ""
         manifest.attributes (
-            "MixinConfigs" to "$modid.mixins.json",
-            "Launcher-Agent-Class" to "me.decce.$modid.instrumentation.AgentMain",
-            "Can-Redefine-Classes" to "true",
-            "Can-Retransform-Classes" to "true",
-            "Can-Set-Native-Method-Prefix" to "true"
+            "MixinConfigs" to "$modid.mixins.json"
         )
     }
 

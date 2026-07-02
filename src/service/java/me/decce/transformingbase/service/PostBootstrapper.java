@@ -1,38 +1,29 @@
 package me.decce.transformingbase.service;
 
-import me.decce.transformingbase.core.ExampleCore;
-import me.decce.transformingbase.core.LibraryAccessor;
-import org.apache.logging.log4j.Logger;
+import me.decce.transformingbase.constants.Constants;
+import me.decce.transformingbase.core.Jasione;
 
-import static me.decce.transformingbase.util.ReflectionHelper.unreflect;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 
 public class PostBootstrapper {
     public static void bootstrap() {
-        initMethodHandles();
         initConfig();
+
+        // Cleanup previously dumped classes
+        if (Files.exists(Constants.OUTPUT_PATH)) {
+            try (var stream = Files.walk(Constants.OUTPUT_PATH)) {
+                stream.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            } catch (IOException ignored) {
+            }
+        }
     }
 
     private static void initConfig() {
-        ExampleCore.config = ConfigLoader.load();
-        ConfigLoader.save(ExampleCore.config);
-    }
-
-    private static void initMethodHandles() {
-        LibraryAccessor.logger = Bootstrapper.LOGGER;
-        LibraryAccessor.logInfoString = unreflect(() -> Logger.class.getMethod("info", String.class));
-        LibraryAccessor.logInfoObject = unreflect(() -> Logger.class.getMethod("info", Object.class));
-        LibraryAccessor.logInfoStringObject = unreflect(() -> Logger.class.getMethod("info", String.class, Object.class));
-        LibraryAccessor.logWarnString = unreflect(() -> Logger.class.getMethod("warn", String.class));
-        LibraryAccessor.logWarnObject = unreflect(() -> Logger.class.getMethod("warn", Object.class));
-        LibraryAccessor.logWarnStringObject = unreflect(() -> Logger.class.getMethod("warn", String.class, Object.class));
-        LibraryAccessor.logErrorString = unreflect(() -> Logger.class.getMethod("error", String.class));
-        LibraryAccessor.logErrorObject = unreflect(() -> Logger.class.getMethod("error", Object.class));
-        LibraryAccessor.logErrorStringObject = unreflect(() -> Logger.class.getMethod("error", String.class, Object.class));
-        LibraryAccessor.logFatalString = unreflect(() -> Logger.class.getMethod("fatal", String.class));
-        LibraryAccessor.logFatalObject = unreflect(() -> Logger.class.getMethod("fatal", Object.class));
-        LibraryAccessor.logFatalStringObject = unreflect(() -> Logger.class.getMethod("fatal", String.class, Object.class));
-        LibraryAccessor.logDebugString = unreflect(() -> Logger.class.getMethod("debug", String.class));
-        LibraryAccessor.logDebugObject = unreflect(() -> Logger.class.getMethod("debug", Object.class));
-        LibraryAccessor.logDebugStringObject = unreflect(() -> Logger.class.getMethod("debug", String.class, Object.class));
+        Jasione.config = ConfigLoader.load();
+        ConfigLoader.save(Jasione.config);
     }
 }

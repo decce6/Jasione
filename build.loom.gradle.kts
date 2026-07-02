@@ -3,7 +3,7 @@ import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     id("me.decce.transformingbase.gradle.transformingbase-common-conventions")
-    id("fabric-loom") version "1.16-SNAPSHOT"
+    id("fabric-loom") version "1.17-SNAPSHOT"
     id("com.gradleup.shadow")
     id("me.modmuss50.mod-publish-plugin")
 }
@@ -33,11 +33,7 @@ tasks {
         inputFile = shadowJar.flatMap { it.archiveFile }
         archiveClassifier = ""
         manifest.attributes (
-            "Automatic-Module-Name" to "me.decce.$modid.${prop("deps.platform")}",
-            "Launcher-Agent-Class" to "me.decce.$modid.instrumentation.AgentMain",
-            "Can-Redefine-Classes" to "true",
-            "Can-Retransform-Classes" to "true",
-            "Can-Set-Native-Method-Prefix" to "true"
+            "Automatic-Module-Name" to "me.decce.$modid.${prop("deps.platform")}"
         )
     }
 

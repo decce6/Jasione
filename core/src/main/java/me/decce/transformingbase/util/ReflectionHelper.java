@@ -13,7 +13,7 @@ public class ReflectionHelper {
     public static <T> T unchecked(UncheckedSupplier<T, ?> supplier) {
         try {
             return supplier.get();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
@@ -35,7 +35,7 @@ public class ReflectionHelper {
     }
 
     @FunctionalInterface
-    public interface UncheckedSupplier<T, E extends Exception> {
+    public interface UncheckedSupplier<T, E extends Throwable> {
         T get() throws E;
     }
 }

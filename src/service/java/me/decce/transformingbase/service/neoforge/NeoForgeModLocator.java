@@ -1,7 +1,7 @@
 package me.decce.transformingbase.service.neoforge;
 
 //? if neoforge {
-/*import me.decce.transformingbase.constants.Constants;
+import me.decce.transformingbase.constants.Constants;
 import net.neoforged.fml.loading.moddiscovery.locators.JarInJarDependencyLocator;
 import net.neoforged.fml.loading.moddiscovery.readers.JarModsDotTomlModFileReader;
 import net.neoforged.neoforgespi.locating.IDependencyLocator;
@@ -15,14 +15,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 //? if <1.21.9 {
-/^import cpw.mods.jarhandling.SecureJar;
-^///?}
+import cpw.mods.jarhandling.SecureJar;
+//?}
 
 public class NeoForgeModLocator extends JarInJarDependencyLocator implements IDependencyLocator {
     @Override
     public void scanMods(List<IModFile> loadedMods, IDiscoveryPipeline pipeline) {
         //? if <1.21.9 {
-        /^try {
+        try {
             var secureJar = SecureJar.from(Path.of(NeoForgeModLocator.class.getProtectionDomain().getCodeSource().getLocation().toURI()));
             var resource = NeoForgeModLocator.class.getResource("/META-INF/jarjar/");
             try (var stream = Files.walk(Path.of(Objects.requireNonNull(resource).toURI()), 1)) {
@@ -36,9 +36,9 @@ public class NeoForgeModLocator extends JarInJarDependencyLocator implements IDe
         } catch (Throwable t) {
             throw new RuntimeException("Loading " + Constants.MOD_ID + " JiJ mod", t);
         }
-        ^///?} else {
-        super.scanMods(loadedMods, pipeline);
-        //?}
+        //?} else {
+        /*super.scanMods(loadedMods, pipeline);
+        *///?}
     }
 }
-*///?}
+//?}

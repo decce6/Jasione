@@ -34,11 +34,7 @@ val jijShadowJar = tasks.register<Jar>("jijShadowJar") {
     dependsOn(tasks.jarJar)
 
     manifest.attributes (
-        "Automatic-Module-Name" to "me.decce.$modid.${prop("deps.platform")}",
-        "Launcher-Agent-Class" to "me.decce.$modid.instrumentation.AgentMain",
-        "Can-Redefine-Classes" to "true",
-        "Can-Retransform-Classes" to "true",
-        "Can-Set-Native-Method-Prefix" to "true"
+        "Automatic-Module-Name" to "me.decce.$modid.${prop("deps.platform")}"
     )
 }
 

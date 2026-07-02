@@ -94,4 +94,4 @@ stonecutter {
 
 includeBuild("core")
 
-rootProject.name = "examplemod"
+rootProject.name = "Jasione"

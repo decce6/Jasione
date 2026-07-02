@@ -2,7 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("me.decce.transformingbase.gradle.transformingbase-common-conventions")
-    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
     id("com.gradleup.shadow")
     id("me.modmuss50.mod-publish-plugin")
 }
@@ -26,11 +26,7 @@ tasks {
         from (modSourceSet.output)
         archiveClassifier = ""
         manifest.attributes (
-            "Automatic-Module-Name" to "me.decce.$modid.${prop("deps.platform")}",
-            "Launcher-Agent-Class" to "me.decce.$modid.instrumentation.AgentMain",
-            "Can-Redefine-Classes" to "true",
-            "Can-Retransform-Classes" to "true",
-            "Can-Set-Native-Method-Prefix" to "true"
+            "Automatic-Module-Name" to "me.decce.$modid.${prop("deps.platform")}"
         )
     }
 
