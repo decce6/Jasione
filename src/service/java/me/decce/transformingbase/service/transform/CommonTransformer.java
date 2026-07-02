@@ -20,8 +20,10 @@ public class CommonTransformer {
     public static final Logger LOGGER = LogManager.getLogger();
 
     public static boolean process(ClassNode node) {
-        if (processInner(node)) {
+        int transformedCount = processInner(node);
+        if (transformedCount > 0) {
             maybeDumpClass(node);
+            maybePrintStatistics(transformedCount, node);
             return true;
         }
         return false;
@@ -33,38 +35,38 @@ public class CommonTransformer {
         }
     }
 
+    private static void maybePrintStatistics(int count, ClassNode classNode) {
+        if (Jasione.getConfig().printOptimization) {
+            LOGGER.info("Successfully optimized {} Enum#values() call{} in {}", count, count > 1 ? "s" : "", classNode.name);
+        }
+    }
+
     private static void dumpClass(ClassNode classNode) {
         ClassWriter writer = new ClassWriter(0);
         classNode.accept(writer);
         ClassDumper.dump(classNode.name, writer.toByteArray());
     }
 
-    public static boolean processInner(ClassNode node) {
-        boolean transformed = false;
+    public static int processInner(ClassNode node) {
+        int count = 0;
         // Copy the method list, because during processing we might need to add clinit if it does not exist
         var methodNodes = List.copyOf(node.methods);
         for (var methodNode : methodNodes) {
-            // Process all methods, return true if any of them has been transformed
-            if (processMethod(methodNode, node)) {
-                transformed = true;
-            }
+            count += processMethod(methodNode, node);
         }
-        return transformed;
+        return count;
     }
 
-    public static boolean processMethod(MethodNode node, ClassNode classNode) {
+    public static int processMethod(MethodNode node, ClassNode classNode) {
         if (ASMUtil.CLINIT.equals(node.name)) {
             // Doing `VALUES = values()` is common in <clinit>, we shouldn't optimize this values() call
             // Because static constructors only run once, they are not worth optimizing anyway
-            return false;
-        }
-        if (node.instructions == null || node.instructions.size() == 0) {
-            return false;
+            return 0;
         }
         return rewriteSafeValuesCall(node, classNode);
     }
 
-    private static boolean rewriteSafeValuesCall(MethodNode node, ClassNode classNode) {
+    private static int rewriteSafeValuesCall(MethodNode node, ClassNode classNode) {
         List<MethodInsnNode> valuesInsns = new ArrayList<>();
         for (var insn : node.instructions) {
             if (insn instanceof MethodInsnNode methodInsnNode &&
@@ -73,14 +75,14 @@ public class CommonTransformer {
             }
         }
 
-        boolean rewritten = false;
+        int count = 0;
         for (var valuesInsn : valuesInsns) {
             if (isSafe(node, classNode.name, valuesInsn)) {
                 processSafeValuesCall(valuesInsn, node, classNode);
-                rewritten = true;
+                count++;
             }
         }
-        return rewritten;
+        return count;
     }
 
     private static boolean isSafe(MethodNode node, String className, MethodInsnNode valuesInsn) {
