@@ -37,7 +37,7 @@ public class CommonTransformer {
 
     private static void maybePrintStatistics(int count, ClassNode classNode) {
         if (Jasione.getConfig().printOptimization) {
-            LOGGER.info("Successfully optimized {} Enum#values() call{} in {}", count, count > 1 ? "s" : "", classNode.name);
+            LOGGER.info("Successfully transformed {} Enum#values() call{} in {}", count, count > 1 ? "s" : "", classNode.name);
         }
     }
 
