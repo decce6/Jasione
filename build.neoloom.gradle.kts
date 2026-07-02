@@ -25,14 +25,14 @@ dependencies {
     mappings(loom.officialMojangMappings())
     forgeUserdev("net.minecraftforge:forge:${prop("deps.minecraft")}-${prop("deps.forge")}:userdev")
 
-    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0")
-    implementation("io.github.llamalad7:mixinextras-common:0.5.0")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4")
+    implementation("io.github.llamalad7:mixinextras-common:0.5.4")
     if (jijMixinExtras) {
-        include("io.github.llamalad7:mixinextras-forge:0.5.0")
-        implementation("io.github.llamalad7:mixinextras-forge:0.5.0")
+        include("io.github.llamalad7:mixinextras-forge:0.5.4")
+        implementation("io.github.llamalad7:mixinextras-forge:0.5.4")
     }
     else {
-        shade("io.github.llamalad7:mixinextras-common:0.5.0")
+        shade("io.github.llamalad7:mixinextras-common:0.5.4")
     }
 }
 
