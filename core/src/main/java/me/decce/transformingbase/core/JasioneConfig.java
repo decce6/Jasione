@@ -10,8 +10,11 @@ import java.util.List;
 public class JasioneConfig {
     @Comment("Specifies whether to enable the mod")
     public boolean enabled = true;
+    @Key("debug.printOptimization")
+    @Comment("When enabled, logs statistics when optimizations are applied")
+    public boolean printOptimization;
     @Key("debug.dumpClasses")
-    @Comment("When enabled, dumps transformed classes to \".jasione.out\" folder")
+    @Comment("When enabled, dumps transformed classes to the \".jasione.out\" folder")
     public boolean dumpClasses;
 
     @Retention(RetentionPolicy.RUNTIME)
