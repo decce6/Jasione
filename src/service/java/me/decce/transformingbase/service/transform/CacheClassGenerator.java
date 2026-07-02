@@ -49,9 +49,6 @@ public class CacheClassGenerator {
     *
     * Note on performance: at runtime, the IS_ENUM will be constant folded to eliminate the branching. The values() method is also
     *  likely to be inlined. And the type cast, too, will be optimized out.
-    * TODO: There is still an edge case we don't cover. If we falsely identified a values() call that is not on an
-    *  enum class, we'll go into the else branch here. Then, if SomeEnum is private, it will crash. Nevertheless, this
-    *  case is too rare to be worth caring about.
     * */
     public static byte[] generateFor(String enumClass, int version) {
         String cacheClassName = TransformationConstants.cacheClassName(enumClass);
