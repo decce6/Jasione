@@ -111,8 +111,13 @@ public class CommonTransformer {
         // Step 2: generate the cache holder class, if not exists
         var classloader = Thread.currentThread().getContextClassLoader();
         if (!ReflectionUtil.classExists(classloader, cacheClassName)) {
+            // We're checking whether the class exists and then attempting to define the class. Since classloading (and
+            //  thus our code) can happen on multiple threads, this is not safe.
+            // Instead of doing (potentially expensive) thread synchronization, we just catch the LinkageError and ignore it.
             byte[] bytes = CacheClassGenerator.generateFor(valuesInsn.owner, classNode.version);
-            ReflectionUtil.defineClass(classloader, cacheClassName, bytes);
+            try {
+                ReflectionUtil.defineClass(classloader, cacheClassName, bytes);
+            } catch (LinkageError ignored) {}
         }
     }
 
