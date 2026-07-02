@@ -56,7 +56,7 @@ public class CacheClassGenerator {
         ClassNode classNode = new ClassNode(Opcodes.ASM9);
         classNode.version = version;
         classNode.name = cacheClassName;
-        classNode.superName = Type.getInternalName(Object.class);
+        classNode.superName = ASMUtil.OBJECT_INTERNAL_NAME;
         classNode.access = ASMUtil.ACC_PUBLIC_FINAL;
 
         var valuesField = new FieldNode(ASMUtil.ACC_PUBLIC_STATIC_FINAL, "VALUES", ASMUtil.DESC_OBJECT_ARRAY, null, null);
@@ -135,7 +135,7 @@ public class CacheClassGenerator {
         invokeOriginalValues.instructions.add(tryEndLabel);
         invokeOriginalValues.instructions.add(new JumpInsnNode(Opcodes.GOTO, endLabel1));
         invokeOriginalValues.instructions.add(catchLabel);
-        invokeOriginalValues.instructions.add(new FrameNode(Opcodes.F_SAME1, 0, null, 1, new Object[]{Type.getInternalName(IllegalAccessError.class)}));
+        invokeOriginalValues.instructions.add(new FrameNode(Opcodes.F_SAME1, 0, null, 1, new Object[]{ASMUtil.ILLEGAL_ACCESS_ERROR_INTERNAL_NAME}));
         invokeOriginalValues.instructions.add(new InsnNode(Opcodes.POP));
         invokeOriginalValues.instructions.add(new LdcInsnNode(enumClass.replace('/', '.')));
         invokeOriginalValues.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, EnumValuesAccessor.INTERNAL_NAME, "invokeValuesSlow", "(Ljava/lang/String;)[Ljava/lang/Object;"));
@@ -143,7 +143,7 @@ public class CacheClassGenerator {
         invokeOriginalValues.instructions.add(new FrameNode(Opcodes.F_SAME1, 0, null, 1, new Object[]{"[Ljava/lang/Object;"}));
         invokeOriginalValues.instructions.add(new InsnNode(Opcodes.ARETURN));
 
-        invokeOriginalValues.tryCatchBlocks.add(new TryCatchBlockNode(tryStartLabel, tryEndLabel, catchLabel, Type.getInternalName(IllegalAccessError.class)));
+        invokeOriginalValues.tryCatchBlocks.add(new TryCatchBlockNode(tryStartLabel, tryEndLabel, catchLabel, ASMUtil.ILLEGAL_ACCESS_ERROR_INTERNAL_NAME));
 
         invokeOriginalValues.maxStack = 1;
         invokeOriginalValues.maxLocals = 0;
