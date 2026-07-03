@@ -92,7 +92,7 @@ public class CommonTransformer {
             analyzer.analyze(className, node);
         } catch (AnalyzerException e) {
             if (Jasione.getConfig().printFailure) {
-                LOGGER.warn("Failed to analyze {}", className, e);
+                LOGGER.warn("Failed to analyze {}#{}", className, node.name, e);
             }
             return false;
         }
