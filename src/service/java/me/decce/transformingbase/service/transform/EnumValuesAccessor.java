@@ -5,6 +5,8 @@ import org.objectweb.asm.Type;
 
 import java.lang.reflect.InvocationTargetException;
 
+// Accessed from generated class. See CacheClassGenerator.java
+@SuppressWarnings("unused")
 public class EnumValuesAccessor {
     public static String INTERNAL_NAME = Type.getInternalName(EnumValuesAccessor.class);
 
