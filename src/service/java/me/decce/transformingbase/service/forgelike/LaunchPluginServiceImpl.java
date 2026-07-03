@@ -32,11 +32,12 @@ public class LaunchPluginServiceImpl implements ILaunchPluginService {
     }
 
     @Override
-    public boolean processClass(Phase phase, ClassNode classNode, Type classType, String reason) {
+    public int processClassWithFlags(Phase phase, ClassNode classNode, Type classType, String reason) {
         if (CLASSLOADING_REASON.equals(reason)) {
-            return CommonTransformer.process(classNode, findModule(classNode.name.replace('/', '.')));
+            boolean transformed = CommonTransformer.process(classNode, findModule(classNode.name.replace('/', '.')));
+            return transformed ? ComputeFlags.SIMPLE_REWRITE : ComputeFlags.NO_REWRITE;
         }
-        return false;
+        return ComputeFlags.NO_REWRITE;
     }
 
     protected Module findModule(String className) {
