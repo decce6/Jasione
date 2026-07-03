@@ -10,6 +10,10 @@ import java.util.List;
 public class JasioneConfig {
     @Comment("Specifies whether to enable the mod")
     public boolean enabled = true;
+    @Key("debug.printAnalysisFailure")
+    @Comment("When enabled, prints stacktrace when bytecode analysis fails. These failures are harmless and can be safely dismissed, but the failed methods will not be optimized.\n" +
+            "It is recommended that you keep this enabled and report failures to the issue tracker of Jasione.")
+    public boolean printFailure = true;
     @Key("debug.printOptimization")
     @Comment("When enabled, logs statistics when optimizations are applied")
     public boolean printOptimization;
