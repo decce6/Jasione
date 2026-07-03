@@ -34,8 +34,12 @@ public class LaunchPluginServiceImpl implements ILaunchPluginService {
     @Override
     public int processClassWithFlags(Phase phase, ClassNode classNode, Type classType, String reason) {
         if (CLASSLOADING_REASON.equals(reason)) {
-            boolean transformed = CommonTransformer.process(classNode, findModule(classNode.name.replace('/', '.')));
-            return transformed ? ComputeFlags.SIMPLE_REWRITE : ComputeFlags.NO_REWRITE;
+            boolean transformed = CommonTransformer.process(classNode);
+            if (transformed) {
+                // The cache class is in an unnamed module - add reads so the original class can access it
+                ReflectionUtil.addReadsAllUnnamed(findModule(classNode.name.replace('/', '.')));
+                return ComputeFlags.SIMPLE_REWRITE;
+            }
         }
         return ComputeFlags.NO_REWRITE;
     }
