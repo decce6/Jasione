@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -88,6 +89,14 @@ public class CommonTransformer {
     private static boolean isSafe(MethodNode node, String className, MethodInsnNode valuesInsn) {
         InterpreterEx interpreterEx = new InterpreterEx(valuesInsn);
         Analyzer<SourceValueEx> analyzer = new Analyzer<>(interpreterEx);
+
+        boolean computeMaxs = shouldComputeMaxs(node.name);
+        int originalStack = node.maxStack;
+        int originalLocals = node.maxLocals;
+        if (computeMaxs) {
+            computeMaxs(node);
+        }
+
         try {
             analyzer.analyze(className, node);
         } catch (AnalyzerException e) {
@@ -95,8 +104,27 @@ public class CommonTransformer {
                 LOGGER.warn("Failed to analyze {}#{}", className, node.name, e);
             }
             return false;
+        } finally {
+            if (computeMaxs) {
+                node.maxStack = originalStack;
+                node.maxLocals = originalLocals;
+            }
         }
         return !interpreterEx.hasViolation();
+    }
+
+    private static boolean shouldComputeMaxs(String methodName) {
+        return methodName.contains("mixinextras$wrapped") || methodName.contains("mixinextras$bridge");
+    }
+
+    private static void computeMaxs(MethodNode methodNode) {
+        int argsSize = Type.getArgumentsAndReturnSizes(methodNode.desc);
+        if ((methodNode.access & Opcodes.ACC_STATIC) != 0) {
+            argsSize--;
+        }
+        methodNode.maxLocals = Math.max(methodNode.maxLocals, argsSize);
+
+        methodNode.maxStack = 10; // magic number only for the analyzer to function; restored afterwards
     }
 
     private static void processSafeValuesCall(MethodInsnNode valuesInsn, MethodNode methodNode, ClassNode classNode) {
