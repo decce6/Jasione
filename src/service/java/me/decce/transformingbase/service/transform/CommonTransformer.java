@@ -49,6 +49,9 @@ public class CommonTransformer {
     }
 
     public static int processInner(ClassNode node) {
+        if (node.name.startsWith("fuzs/extensibleenums")) {
+            return 0;
+        }
         int count = 0;
         // Copy the method list, because during processing we might need to add clinit if it does not exist
         var methodNodes = List.copyOf(node.methods);
