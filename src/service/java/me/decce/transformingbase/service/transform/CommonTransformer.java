@@ -53,9 +53,7 @@ public class CommonTransformer {
             return 0;
         }
         int count = 0;
-        // Copy the method list, because during processing we might need to add clinit if it does not exist
-        var methodNodes = List.copyOf(node.methods);
-        for (var methodNode : methodNodes) {
+        for (var methodNode : node.methods) {
             count += processMethod(methodNode, node);
         }
         return count;
