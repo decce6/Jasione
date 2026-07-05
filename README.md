@@ -17,6 +17,9 @@ Jasione currently offers several debug options, which can be used to inspect the
 enabled = true
 
 [debug]
+    #When enabled, prints stacktrace when bytecode analysis fails. These failures are harmless and can be safely dismissed, but the failed methods will not be optimized.
+    #It is recommended that you keep this enabled and report failures to the issue tracker of Jasione.
+    printAnalysisFailure = true
 	#When enabled, logs statistics when optimizations are applied
 	printOptimization = false
 	#When enabled, dumps transformed classes to the ".jasione.out" folder
