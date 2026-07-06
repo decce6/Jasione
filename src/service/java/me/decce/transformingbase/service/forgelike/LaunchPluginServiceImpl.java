@@ -37,7 +37,10 @@ public class LaunchPluginServiceImpl implements ILaunchPluginService {
             boolean transformed = CommonTransformer.process(classNode);
             if (transformed) {
                 // The cache class is in an unnamed module - add reads so the original class can access it
-                ReflectionUtil.addReadsAllUnnamed(findModule(classNode.name.replace('/', '.')));
+                var module = findModule(classNode.name.replace('/', '.'));
+                if (module != null) {
+                    ReflectionUtil.addReadsAllUnnamed(module);
+                }
                 return ComputeFlags.SIMPLE_REWRITE;
             }
         }
