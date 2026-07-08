@@ -19,7 +19,6 @@ import java.util.List;
 
 public class CommonTransformer {
     public static final Logger LOGGER = LogManager.getLogger();
-    private static final ClassLoader THIS_CLASS_LOADER = CommonTransformer.class.getClassLoader();
 
     public static boolean process(ClassNode node) {
         int transformedCount = processInner(node);
@@ -143,13 +142,7 @@ public class CommonTransformer {
         methodNode.instructions.remove(valuesInsn);
 
         // Step 2: generate the cache holder class, if not exists
-        //? fabric {
-        // On Fabric, we will be loaded by knot, so we just use the classloader for this class
-        // This fixes https://github.com/decce6/Jasione/issues/3 (during mixin transformation the context CL is "app")
-        var classloader = THIS_CLASS_LOADER;
-        //? } else {
-        /*var classloader = Thread.currentThread().getContextClassLoader();
-        *///? }
+        var classloader = TransformationConstants.findClassLoaderForCacheClass();
         if (!ReflectionUtil.classExists(classloader, cacheClassName)) {
             // We're checking whether the class exists and then attempting to define the class. Since classloading (and
             //  thus our code) can happen on multiple threads, this is not safe.

@@ -9,6 +9,7 @@ import cpw.mods.modlauncher.serviceapi.ILaunchPluginService;
 import me.decce.transformingbase.constants.Constants;
 import me.decce.transformingbase.service.transform.CommonTransformer;
 import me.decce.transformingbase.service.transform.ReflectionUtil;
+import me.decce.transformingbase.service.transform.TransformationConstants;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 
@@ -48,7 +49,7 @@ public class LaunchPluginServiceImpl implements ILaunchPluginService {
     }
 
     protected Module findModule(String className) {
-        if (Thread.currentThread().getContextClassLoader() instanceof ModuleClassLoader moduleClassLoader) {
+        if (TransformationConstants.findClassLoaderForCacheClass() instanceof ModuleClassLoader moduleClassLoader) {
             try {
                 //noinspection unchecked
                 var packageLookup = (Map<String, ResolvedModule>) PACKAGE_LOOKUP.invokeExact(moduleClassLoader);
