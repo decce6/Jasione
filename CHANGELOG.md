@@ -1,3 +1,7 @@
+## 1.0.3
+
+Fixed NPE when loading classes from threads whose context classloader is not the transforming classloader for the platform.
+
 ## 1.0.2
 
 - Improved mod compatibility
