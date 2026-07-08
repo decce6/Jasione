@@ -34,7 +34,7 @@ dependencies {
 
     compileOnly("com.electronwill.night-config:core:3.9.0")
     compileOnly("com.electronwill.night-config:toml:3.9.0")
-    compileOnly("net.lenni0451:Reflect:1.6.3")
+    compileOnly("net.lenni0451:Reflect:1.6.4")
 }
 
 tasks {
@@ -44,13 +44,9 @@ tasks {
 
     named<ShadowJar>("shadowJar") {
         configurations = listOf(shade)
-        relocate("net.lenni0451.classtransform", "me.decce.transformingbase.shadow.classtransform")
         relocate("net.lenni0451.reflect", "me.decce.transformingbase.shadow.reflect")
-//        relocate("org.objectweb.asm", "me.decce.transformingbase.core.shadow.asm")
         relocate("com.electronwill.nightconfig", "me.decce.transformingbase.shadow.nightconfig")
         archiveClassifier = ""
-        exclude ("/META-INF/versions/21/**")
-        exclude ("/META-INF/versions/24/**")
     }
 
     assemble {
