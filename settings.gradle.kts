@@ -84,7 +84,7 @@ stonecutter {
         fabricUnobfuscated (listOf("26.1"))
         fabric (listOf("1.21.11"))
         neoforge (listOf("26.1", "1.21.11", "1.21.1"))
-        forge (listOf("1.20.1"))
+        forge (listOf("1.20.1", "1.18.2"))
 
         // This is the default target.
         // https://stonecutter.kikugie.dev/stonecutter/guide/setup#settings-settings-gradle-kts

@@ -16,8 +16,3 @@ authors = "decce"
 modId = "minecraft"
 versionRange = "${minecraft_supported_forge}"
 mandatory = true
-
-[[dependencies.${modid}]]
-modId = "forge"
-mandatory = true
-versionRange = "${forge_version_range}"
