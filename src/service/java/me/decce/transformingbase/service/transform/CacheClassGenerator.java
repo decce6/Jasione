@@ -57,11 +57,11 @@ public class CacheClassGenerator {
         classNode.version = version;
         classNode.name = cacheClassName;
         classNode.superName = ASMUtil.OBJECT_INTERNAL_NAME;
-        classNode.access = ASMUtil.ACC_PUBLIC_FINAL;
+        classNode.access = ASMUtil.ACC_SYNTHETIC_PUBLIC_FINAL;
 
-        var valuesField = new FieldNode(ASMUtil.ACC_PUBLIC_STATIC_FINAL, "VALUES", ASMUtil.DESC_OBJECT_ARRAY, null, null);
+        var valuesField = new FieldNode(ASMUtil.ACC_SYNTHETIC_PUBLIC_STATIC_FINAL, "VALUES", ASMUtil.DESC_OBJECT_ARRAY, null, null);
         classNode.fields.add(valuesField);
-        var isEnumField = new FieldNode(ASMUtil.ACC_PUBLIC_STATIC_FINAL, "IS_ENUM", ASMUtil.DESC_BOOLEAN, null, null);
+        var isEnumField = new FieldNode(ASMUtil.ACC_SYNTHETIC_PUBLIC_STATIC_FINAL, "IS_ENUM", ASMUtil.DESC_BOOLEAN, null, null);
         classNode.fields.add(isEnumField);
 
         classNode.methods.add(generateClinit(enumClass, cacheClassName));
@@ -103,7 +103,7 @@ public class CacheClassGenerator {
     }
 
     private static MethodNode generateValuesMethod(String enumClass, String cacheClassName) {
-        MethodNode values = new MethodNode(ASMUtil.ACC_PUBLIC_STATIC, "values", ASMUtil.DESC_METHOD_OBJECT_ARRAY, null, null);
+        MethodNode values = new MethodNode(ASMUtil.ACC_SYNTHETIC_PUBLIC_STATIC, "values", ASMUtil.DESC_METHOD_OBJECT_ARRAY, null, null);
 
         LabelNode elseLabel = new LabelNode();
         LabelNode endLabel = new LabelNode();
@@ -124,7 +124,7 @@ public class CacheClassGenerator {
     }
 
     private static MethodNode generateInvokeOriginalValuesMethod(String enumClass, String cacheClassName) {
-        MethodNode invokeOriginalValues = new MethodNode(ASMUtil.ACC_PUBLIC_STATIC, "invokeOriginalValues", ASMUtil.DESC_METHOD_OBJECT_ARRAY, null, null);
+        MethodNode invokeOriginalValues = new MethodNode(ASMUtil.ACC_SYNTHETIC_PUBLIC_STATIC, "invokeOriginalValues", ASMUtil.DESC_METHOD_OBJECT_ARRAY, null, null);
 
         LabelNode tryStartLabel = new LabelNode();
         LabelNode tryEndLabel = new LabelNode();

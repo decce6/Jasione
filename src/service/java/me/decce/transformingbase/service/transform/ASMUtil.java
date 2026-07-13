@@ -13,4 +13,7 @@ public class ASMUtil {
     public static final int ACC_PUBLIC_FINAL = Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
     public static final int ACC_PUBLIC_STATIC = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC;
     public static final int ACC_PUBLIC_STATIC_FINAL = Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
+    public static final int ACC_SYNTHETIC_PUBLIC_STATIC = Opcodes.ACC_SYNTHETIC | ACC_PUBLIC_STATIC;
+    public static final int ACC_SYNTHETIC_PUBLIC_FINAL = Opcodes.ACC_SYNTHETIC | ACC_PUBLIC_FINAL;
+    public static final int ACC_SYNTHETIC_PUBLIC_STATIC_FINAL = Opcodes.ACC_SYNTHETIC | ACC_PUBLIC_STATIC_FINAL;
 }
