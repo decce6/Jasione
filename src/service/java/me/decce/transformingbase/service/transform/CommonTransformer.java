@@ -125,7 +125,10 @@ public class CommonTransformer {
         }
         methodNode.maxLocals = Math.max(methodNode.maxLocals, argsSize);
 
-        methodNode.maxStack = 10; // magic number only for the analyzer to function; restored afterwards
+        // MixinExtras synthesized methods do not have max locals and stacks set, but these are required for the Analyzer to work.
+        // Instead of performing a full analysis, which would be cumbersome, we just use a magic number here that likely will work for most methods
+        // The original values are restored after analysis.
+        methodNode.maxStack = Math.max(methodNode.maxStack, 10);
     }
 
     private static void processSafeValuesCall(MethodInsnNode valuesInsn, MethodNode methodNode, ClassNode classNode) {
