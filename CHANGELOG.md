@@ -1,3 +1,8 @@
+## 1.0.4
+
+- Generated classes and members are now marked as synthetic (`ACC_SYNTHETIC`)
+- Added support for 1.19.2 and 1.18.2
+
 ## 1.0.3
 
 Fixed NPE when loading classes from threads whose context classloader is not the transforming classloader for the platform.
