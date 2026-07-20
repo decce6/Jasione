@@ -106,6 +106,7 @@ repositories {
         }
     }
     exclusiveMaven("Sponge", "org.spongepowered", "https://repo.spongepowered.org/repository/maven-public")
+    exclusiveMaven("Modrinth", "maven.modrinth", "https://api.modrinth.com/maven")
     maven {
         name = "lenni0451"
         url = uri("https://maven.lenni0451.net/snapshots")

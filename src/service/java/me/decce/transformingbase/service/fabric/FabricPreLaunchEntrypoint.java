@@ -20,6 +20,10 @@ public class FabricPreLaunchEntrypoint implements PreLaunchEntrypoint {
             return;
         }
         var transformer = MixinEnvironment.getCurrentEnvironment().getActiveTransformer();
+        if ("dev.jfronny.libjf.unsafe.asm.AsmTransformer".equals(transformer.getClass().getName())) {
+            // LibJF is in use - skip, we'll use the ASM functionalities provided by it (see LibJFEntrypoint)
+            return;
+        }
         try {
             var processorField = Class.forName("org.spongepowered.asm.mixin.transformer.MixinTransformer").getDeclaredField("processor");
             processorField.setAccessible(true);

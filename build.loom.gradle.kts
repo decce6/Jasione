@@ -13,13 +13,35 @@ val modid = prop("modid")
 
 val modSourceSet = sourceSets["mod-src"]
 
+val jarJarDep = configurations.register("jarJarDep")
+
+val extractJarInJars = tasks.register<Copy>("extractJarInJars") {
+    from(jarJarDep.map { configuration ->
+        configuration.map { file -> zipTree(file) }
+    })
+    include("META-INF/jars/*.jar")
+    eachFile {
+        relativePath = RelativePath(true, name)
+    }
+    into(layout.buildDirectory.dir("extracted-libs"))
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:${prop("deps.minecraft")}")
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:0.19.2")
+
+    jarJarDep("maven.modrinth:libjf:3.19.12")
+    "serviceImplementation" (fileTree(extractJarInJars.map { it.destinationDir }) {
+        include("*.jar")
+    })
 }
 
 tasks {
+    named("compileServiceJava") {
+        dependsOn(extractJarInJars)
+    }
+
     named<Jar>("jar") {
         archiveClassifier = "slim"
     }

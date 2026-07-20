@@ -20,6 +20,9 @@
     ],
     "main": [
       "me.decce.${modid}.fabric.FabricEntrypoint"
+    ],
+    "libjf:asm": [
+      "me.decce.${modid}.service.fabric.LibJFEntrypoint"
     ]
   },
   "depends": {
