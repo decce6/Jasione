@@ -1,3 +1,8 @@
+## 1.0.5
+
+- Fixed crash on 1.18.2~1.20.4 with Java 17
+- Fixed LibJF compatibility
+
 ## 1.0.4
 
 - Generated classes and members are now marked as synthetic (`ACC_SYNTHETIC`)
