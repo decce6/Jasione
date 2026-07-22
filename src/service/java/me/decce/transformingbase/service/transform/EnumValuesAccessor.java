@@ -20,7 +20,13 @@ public class EnumValuesAccessor {
         if (enumClass == null || !enumClass.isEnum()) {
             return null;
         }
-        return enumClass.getEnumConstants();
+        try {
+            return enumClass.getEnumConstants();
+        } catch (NoClassDefFoundError ignored) {
+            // This might happen if the mod optionally depends on another mod
+            // See: https://github.com/decce6/Jasione/issues/9
+            return null;
+        }
     }
 
     public static Object[] invokeValuesSlow(String nonEnumClassName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
