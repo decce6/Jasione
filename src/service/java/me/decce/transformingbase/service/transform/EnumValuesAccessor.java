@@ -10,9 +10,29 @@ import java.lang.reflect.InvocationTargetException;
 public class EnumValuesAccessor {
     public static String INTERNAL_NAME = Type.getInternalName(EnumValuesAccessor.class);
 
+    private static boolean isExtensibleEnum(Class<?> enumClass) {
+        // Forge (and thus Kilt) can overwrite the values array if the enum class is already loaded at the time a mod requests enum extension
+        // We must exclude all `IExtensibleEnum`s from optimization to prevent issues - see
+        // This is not an issue on NeoForge because it directly transforms the enum class.
+        var interfaces = enumClass.getInterfaces();
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < interfaces.length; i++) {
+            if ("net.minecraftforge.common.IExtensibleEnum".equals(interfaces[i].getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isEnum(String enumClassName) {
         var enumClass = Classes.byName(enumClassName, Classes.getCallerClass(1).getClassLoader());
-        return enumClass != null && enumClass.isEnum();
+        if (enumClass == null) {
+            return false;
+        }
+        if (isExtensibleEnum(enumClass)) {
+            return false;
+        }
+        return enumClass.isEnum();
     }
 
     public static Object[] values(String enumClassName) {
