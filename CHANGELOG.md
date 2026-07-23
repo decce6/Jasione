@@ -1,3 +1,10 @@
+## 1.0.6
+
+This is a bugfix release further improving mod compatibility.
+
+- Fixed crashes related to extensible enums
+- Fixed `NoClassDefFoundError`s when a mod has an optional dependency which is not present
+
 ## 1.0.5
 
 - Fixed crash on 1.18.2~1.20.4 with Java 17
