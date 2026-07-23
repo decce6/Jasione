@@ -1,5 +1,6 @@
 package me.decce.transformingbase.service.transform;
 
+import me.decce.transformingbase.core.Jasione;
 import net.lenni0451.reflect.Classes;
 import org.objectweb.asm.Type;
 
@@ -30,6 +31,9 @@ public class EnumValuesAccessor {
             return false;
         }
         if (isExtensibleEnum(enumClass)) {
+            if (Jasione.config.printOptimization) {
+                Jasione.LOGGER.info("Rejected optimization of {} because it is dynamically extensible", enumClass.getName().replace('.', '/'));
+            }
             return false;
         }
         return enumClass.isEnum();
