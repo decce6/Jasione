@@ -28,5 +28,8 @@
   "depends": {
     "minecraft": "${minecraft_supported_fabric}",
     "fabricloader": ">=0.16.0"
+  },
+  "breaks": {
+    "redirector": "*"
   }
 }
