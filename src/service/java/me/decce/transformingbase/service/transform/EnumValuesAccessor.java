@@ -4,7 +4,9 @@ import me.decce.transformingbase.core.Jasione;
 import net.lenni0451.reflect.Classes;
 import org.objectweb.asm.Type;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 
 // Accessed from generated class. See CacheClassGenerator.java
 @SuppressWarnings("unused")
@@ -46,11 +48,51 @@ public class EnumValuesAccessor {
         }
         try {
             return enumClass.getEnumConstants();
-        } catch (NoClassDefFoundError ignored) {
-            // This might happen if the mod optionally depends on another mod
-            // See: https://github.com/decce6/Jasione/issues/9
-            return null;
+        } catch (Throwable ignored) {
+            /* This might happen in various cases:
+             * - the mod optionally depends on another mod (NoClassDefFoundError)
+             *   - See: https://github.com/decce6/Jasione/issues/9 (Journeymap Integration has optional integration with various mods)
+             * - the enum class contains a method whose signature uses a class which does not exist at runtime
+             *   - This may be NoClassDefFoundError, or, on NeoForge, RuntimeException: Attempted to load class net/minecraft/client/renderer/RenderType for invalid dist DEDICATED_SERVER
+             *   - The reason for this is that `Class#getEnumConstants` uses `Class#getMethod` to find the values method. `Class#getMethod` internally iterates through all methods, which triggers the error.
+             *   - See: https://github.com/decce6/Jasione/issues/14 (com.supermartijn642.scarecrowsterritory.ScarecrowType is an enum, but contains a method whose return type is class_1921 - a client class that does not exist on dedicated servers)
+             * In the first case, it is fine to just return null, as the code is likely unreachable when the optional dependency does not exist. In the second case, however, we must use an alternative way to find the values array.
+             */
+            return valuesFragile(enumClass);
         }
+    }
+
+    private static Object[] valuesFragile(Class<?> enumClass) {
+        // This method is only reached if the class **IS** an enum, and `Class#getEnumConstants` throws an error.
+        // Try to find the internal $VALUES field - fragile, because the naming is arbitrarily decided by the compiler.
+        Field values = null;
+        Field firstSynthetic = null;
+        for (Field field : enumClass.getDeclaredFields()) {
+            if (!Modifier.isStatic(field.getModifiers()) || !field.isSynthetic() || !field.getType().isArray() || !field.getType().getComponentType().equals(enumClass)) {
+                continue;
+            }
+            String name = field.getName();
+            // Use startsWith instead of equals, because if the $VALUES field name is already defined by a user field, javac attempts alternate names like $VALUES$, $VALUES$$, etc.
+            // The ECJ (Eclipse Compiler for Java) uses ENUM$VALUES
+            if (name.startsWith("$VALUES") || "ENUM$VALUES".equals(name)) {
+                values = field;
+                break;
+            }
+            else if (firstSynthetic == null) {
+                firstSynthetic = field; // Store the first synthetic field matching the type, in case there is no field matching the name, either due to obfuscation or different compiler
+            }
+        }
+        if (values == null) {
+            // Couldn't find the values field based on name, fallback to first synthetic field matching the type
+            values = firstSynthetic;
+        }
+        if (values != null) {
+            values.setAccessible(true);
+            try {
+                return (Object[]) values.get(null);
+            } catch (IllegalAccessException ignored) {}
+        }
+        return null;
     }
 
     public static Object[] invokeValuesSlow(String nonEnumClassName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
