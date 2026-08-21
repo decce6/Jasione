@@ -13,7 +13,7 @@ public class EnumValuesAccessor {
 
     private static boolean isExtensibleEnum(Class<?> enumClass) {
         // Forge (and thus Kilt) can overwrite the values array if the enum class is already loaded at the time a mod requests enum extension
-        // We must exclude all `IExtensibleEnum`s from optimization to prevent issues - see
+        // We must exclude all `IExtensibleEnum`s from optimization to prevent issues - see https://github.com/decce6/Jasione/issues/7
         // This is not an issue on NeoForge because it directly transforms the enum class.
         var interfaces = enumClass.getInterfaces();
         //noinspection ForLoopReplaceableByForEach
