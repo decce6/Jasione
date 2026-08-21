@@ -1,3 +1,8 @@
+## 1.0.7
+
+- Improved mod compatibility on dedicated server ([#14](https://github.com/decce6/Jasione/issues/14))
+- Marked Redirector as incompatible. Jasione functionally replaces Redirector and you should not use both at the same time.
+
 ## 1.0.6
 
 This is a bugfix release further improving mod compatibility.
