@@ -1,3 +1,8 @@
+## 1.0.8
+
+- Analyzer: fixed detection when returned values array is stored into another array
+- Fixed compatibility with older versions of LibJF
+
 ## 1.0.7
 
 - Improved mod compatibility on dedicated server ([#14](https://github.com/decce6/Jasione/issues/14))
