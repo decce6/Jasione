@@ -20,6 +20,10 @@ import java.util.List;
 public class CommonTransformer {
     public static final Logger LOGGER = LogManager.getLogger();
 
+    public static void init() {
+        // Used to force classloading
+    }
+
     public static boolean process(ClassNode node) {
         int transformedCount = processInner(node);
         if (transformedCount > 0) {
