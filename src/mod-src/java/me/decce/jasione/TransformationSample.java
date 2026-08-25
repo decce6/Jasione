@@ -112,4 +112,11 @@ public class TransformationSample {
         }
         direction[0] = null;
     }
+
+    public static void storeIntoArray() {
+        Object[][] bucket = new Object[1][];
+        var direction = Direction.values(); // Should not be cached
+        bucket[0] = direction;
+        bucket[0][0] = Direction.EAST;
+    }
 }

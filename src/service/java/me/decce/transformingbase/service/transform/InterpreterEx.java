@@ -75,7 +75,10 @@ public class InterpreterEx extends Interpreter<SourceValueEx> {
 
     @Override
     public SourceValueEx ternaryOperation(AbstractInsnNode insn, SourceValueEx value1, SourceValueEx value2, SourceValueEx value3) {
-        violateIf(value1.tracking); // Returned array will be mutated
+        if (insn.getOpcode() == Opcodes.AASTORE) {
+            violateIf(value1.tracking); // Returned array will be mutated
+            violateIf(value3.tracking); // Returned array will be stored into another array
+        }
         return SourceValueEx.of(sourceInterpreter.ternaryOperation(insn, value1.sourceValue, value2.sourceValue, value3.sourceValue));
     }
 
