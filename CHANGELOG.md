@@ -1,3 +1,7 @@
+## 1.0.9
+
+- Analyzer: fixed maxLocals computation which caused some analysis failures.
+
 ## 1.0.8
 
 - Analyzer: fixed detection when returned values array is stored into another array
