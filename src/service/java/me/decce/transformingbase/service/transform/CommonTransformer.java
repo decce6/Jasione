@@ -7,10 +7,12 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.tree.analysis.Analyzer;
 import org.objectweb.asm.tree.analysis.AnalyzerException;
 
@@ -123,14 +125,36 @@ public class CommonTransformer {
     }
 
     private static void computeMaxs(MethodNode methodNode) {
-        int argsSize = Type.getArgumentsAndReturnSizes(methodNode.desc);
+        int argumentsAndReturnSizes = Type.getArgumentsAndReturnSizes(methodNode.desc);
+        int maxLocals = argumentsAndReturnSizes >> 2;
         if ((methodNode.access & Opcodes.ACC_STATIC) != 0) {
-            argsSize--;
+            maxLocals--;
         }
-        methodNode.maxLocals = Math.max(methodNode.maxLocals, argsSize);
+        for (var insn : methodNode.instructions) {
+            if (insn instanceof VarInsnNode varInsnNode) {
+                switch (insn.getOpcode()) {
+                    case Opcodes.LLOAD, Opcodes.DLOAD, Opcodes.LSTORE, Opcodes.DSTORE:
+                        maxLocals = Math.max(maxLocals, varInsnNode.var + 2);
+                    default:
+                        maxLocals = Math.max(maxLocals, varInsnNode.var + 1);
+                }
+            }
+            else if (insn instanceof IincInsnNode iincInsnNode) {
+                maxLocals = Math.max(maxLocals, iincInsnNode.var + 1);
+            }
+        }
+        if (methodNode.localVariables != null) {
+            for (var localVariable : methodNode.localVariables) {
+                char desc = localVariable.desc.charAt(0);
+                int size = (desc == 'J' || desc == 'D') ? 2 : 1;
+                maxLocals = Math.max(maxLocals, localVariable.index + size);
+            }
+        }
 
-        // MixinExtras synthesized methods do not have max locals and stacks set, but these are required for the Analyzer to work.
-        // Instead of performing a full analysis, which would be cumbersome, we just use a magic number here that likely will work for most methods
+        methodNode.maxLocals = Math.max(methodNode.maxLocals, maxLocals);
+
+        // Methods synthesized by MixinExtras do not have max locals and stacks set, but these are required for the Analyzer to work.
+        // Instead of performing a full analysis, which would be cumbersome for maxStacks, we just use a magic number here that likely will work for most methods
         // The original values are restored after analysis.
         methodNode.maxStack = Math.max(methodNode.maxStack, 10);
     }
